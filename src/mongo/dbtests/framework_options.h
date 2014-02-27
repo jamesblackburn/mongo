@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "mongo/base/status.h"
+#include "mongo/util/net/hostandport.h"
 
 namespace mongo {
 
@@ -43,6 +44,7 @@ namespace mongo {
     namespace moe = mongo::optionenvironment;
 
     struct FrameworkGlobalParams {
+        HostAndPort host;
         unsigned perfHist;
         unsigned long long seed;
         int runsPerTest;

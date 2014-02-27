@@ -46,7 +46,14 @@ namespace mongo {
 
     Status addTestFrameworkOptions(moe::OptionSection* options) {
 
-        options->addOptionChaining("help", "help,h", moe::Switch, "show this usage information");
+        options->addOptionChaining("help", "help", moe::Switch, "show this usage information");
+
+        options->addOptionChaining("host", "host,h", moe::String,
+                "mongo host to store performance results (Default: perfdb.10gen.cc)");
+
+        options->addOptionChaining("port", "port", moe::Int,
+                "server port. Can also use --host hostname:port")
+                                  .validRange(0, 65535);
 
         options->addOptionChaining("dbpath", "dbpath", moe::String,
                 "db data path for this test run. NOTE: the contents of this directory will "
@@ -119,6 +126,16 @@ namespace mongo {
 
     Status storeTestFrameworkOptions(const moe::Environment& params,
                                      const std::vector<std::string>& args) {
+
+        string host = "perfdb.10gen.cc";
+        int port = 27017;
+        if (params.count("host")) {
+            host = params["host"].as<string>();
+        }
+        if (params.count("port")) {
+            port = params["port"].as<int>();
+        }
+        frameworkGlobalParams.host = HostAndPort(host, port);
 
         if (params.count("dbpath")) {
             frameworkGlobalParams.dbpathSpec = params["dbpath"].as<string>();
